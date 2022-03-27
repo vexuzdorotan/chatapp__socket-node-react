@@ -1,4 +1,9 @@
 #root {
+  background-image: url('../public/bg-purple-technology.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 100vw;
   height: 100vh;
 }
 
@@ -45,4 +50,10 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   /* border: 1px solid gray; */
+}
+
+.svg-inline--fa.fa-arrow-right-from-bracket:hover {
+  -webkit-transition: transform 0.5s ease-in-out;
+  transform: scale(1.1);
+  cursor: pointer;
 }

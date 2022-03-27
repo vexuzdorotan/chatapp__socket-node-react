@@ -21,13 +21,21 @@ const App = () => {
         {!joined ? (
           <Room
             socket={socket}
+            username={username}
             room={room}
             setUsername={setUsername}
             setRoom={setRoom}
             setJoined={setJoined}
           />
         ) : (
-          <Chat socket={socket} username={username} room={room} />
+          <Chat
+            socket={socket}
+            username={username}
+            room={room}
+            setUsername={setUsername}
+            setRoom={setRoom}
+            setJoined={setJoined}
+          />
         )}
       </div>
     </Container>

@@ -1,19 +1,33 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
-import { Button, ListGroup, InputGroup, FormControl } from 'react-bootstrap'
-import ScrollToBottom from 'react-scroll-to-bottom'
+import {
+  Row,
+  Col,
+  Button,
+  ListGroup,
+  InputGroup,
+  FormControl,
+} from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 
-const Chat = ({ socket, username, room }) => {
+const Chat = ({ socket, username, room, setUsername, setRoom, setJoined }) => {
   const [currentMessage, setCurrentMessage] = useState('')
   const [msgObjList, setMsgObjList] = useState([])
+
+  const messagesEndRef = useRef(null)
+
+  const scrollToBottom = () => {
+    const element = document.querySelector('.list-group')
+
+    element.scrollTop = element.scrollHeight
+  }
+
+  useEffect(scrollToBottom, [msgObjList])
 
   useEffect(() => {
     socket.on('receive_message', (data) => {
       setMsgObjList((message) => [...message, data])
-
-      document
-        .querySelector('.list-group')
-        .scrollTo(0, document.body.scrollHeight)
     })
   }, [socket, currentMessage])
 
@@ -30,44 +44,64 @@ const Chat = ({ socket, username, room }) => {
     })
 
     setMsgObjList((message) => [...message, { username, currentMessage }])
-    setCurrentMessage('')
+
+    setTimeout(() => {
+      setCurrentMessage('')
+    }, 0)
+  }
+
+  const logout = () => {
+    setUsername('')
+    setRoom('')
+    setJoined(false)
   }
 
   return (
     <>
       <div className='chat-header'>
-        <h3>Welcome, {username}</h3>
-        <h5>Room: {room}</h5>
+        <Row className='justify-content-between'>
+          <Col>
+            <h3 className='text-white'>Welcome, {username}</h3>
+            <h5 className='text-white'>Room: {room}</h5>
+          </Col>
+          <Col className='col-auto align-self-end'>
+            <FontAwesomeIcon
+              icon={faArrowRightFromBracket}
+              className='text-white'
+              style={{ height: '2rem' }}
+              onClick={logout}
+            />
+          </Col>
+        </Row>
       </div>
       <div className='chat-content'>
-        <ScrollToBottom>
-          <ListGroup className='border'>
-            {msgObjList &&
-              msgObjList.map((message, idx) =>
-                message.username !== username ? (
-                  <ListGroup.Item
-                    className='d-flex justify-content-between align-items-start'
-                    key={idx}
-                  >
-                    <div className='ms-2 me-auto'>
-                      <div className='fw-bold'>{message.username}</div>
-                      {message.currentMessage}
-                    </div>
-                  </ListGroup.Item>
-                ) : (
-                  <ListGroup.Item
-                    className='d-flex justify-content-between align-items-start bg-primary text-light'
-                    key={idx}
-                  >
-                    <div className='ms-auto me-2 text-end'>
-                      <div className='fw-bold'>{message.username}</div>
-                      {message.currentMessage}
-                    </div>
-                  </ListGroup.Item>
-                )
-              )}
-          </ListGroup>
-        </ScrollToBottom>
+        <ListGroup className='border bg-white'>
+          {msgObjList &&
+            msgObjList.map((message, idx) =>
+              message.username !== username ? (
+                <ListGroup.Item
+                  className='d-flex justify-content-between align-items-start'
+                  key={idx}
+                >
+                  <div className='ms-2 me-auto'>
+                    <div className='fw-bold'>{message.username}</div>
+                    {message.currentMessage}
+                  </div>
+                </ListGroup.Item>
+              ) : (
+                <ListGroup.Item
+                  className='d-flex justify-content-between align-items-start bg-primary text-light'
+                  key={idx}
+                >
+                  <div className='ms-auto me-2 text-end'>
+                    <div className='fw-bold'>{message.username}</div>
+                    {message.currentMessage}
+                  </div>
+                </ListGroup.Item>
+              )
+            )}
+        </ListGroup>
+        <div ref={messagesEndRef} />
       </div>
 
       <InputGroup className='mb-3'>

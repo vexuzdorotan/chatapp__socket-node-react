@@ -16,7 +16,7 @@ const io = new Server(httpServer, {
   },
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 
 app.use(cors())
 
@@ -38,10 +38,10 @@ io.on('connection', (socket) => {
 })
 
 
-// app.get('/', (req, res) => {
-//   res.sendFile(__dirname + '/index.html')
-// })
+app.get('/', (req, res) => {
+  res.send(`Server listening on port ${PORT}`)
+})
 
-httpServer.listen(3001, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`)
 })

@@ -8,7 +8,7 @@ import Chat from './chat/components/Chat'
 
 import './App.css'
 
-const socket = io(process.env.REACT_APP_BACKEND_URL || 'https://chatapp-socket-io-node-react.herokuapp.com/')
+const socket = io(process.env.REACT_APP_BACKEND_LOCAL_URL || 'https://chatapp-socket-io-node-react.herokuapp.com/')
 
 const App = () => {
   const [username, setUsername] = useState('')

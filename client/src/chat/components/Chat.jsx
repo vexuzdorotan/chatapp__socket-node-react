@@ -29,21 +29,25 @@ const Chat = ({ socket, username, room, setUsername, setRoom, setJoined }) => {
     socket.on('receive_message', (data) => {
       setMsgObjList((message) => [...message, data])
     })
-  }, [socket, currentMessage])
+  }, [socket])
 
   const sendMessage = async () => {
     if (currentMessage === '') return
+
+    const dateToday = new Date()
+    const time = dateToday.toLocaleString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
 
     await socket.emit('send_message', {
       username,
       room,
       currentMessage,
-      time: `${new Date(Date.now()).getHours()}:${new Date(
-        Date.now()
-      ).getMinutes()}`,
+      time,
     })
 
-    setMsgObjList((message) => [...message, { username, currentMessage }])
+    setMsgObjList((message) => [...message, { username, currentMessage, time }])
 
     setTimeout(() => {
       setCurrentMessage('')
@@ -84,7 +88,10 @@ const Chat = ({ socket, username, room, setUsername, setRoom, setJoined }) => {
                   key={idx}
                 >
                   <div className='ms-2 me-auto'>
-                    <div className='fw-bold'>{message.username}</div>
+                    <div>
+                      <span className='fw-bold'>{message.username}</span>{' '}
+                      <small className='text-secondary'>{message.time}</small>
+                    </div>
                     {message.currentMessage}
                   </div>
                 </ListGroup.Item>
@@ -94,7 +101,10 @@ const Chat = ({ socket, username, room, setUsername, setRoom, setJoined }) => {
                   key={idx}
                 >
                   <div className='ms-auto me-2 text-end'>
-                    <div className='fw-bold'>{message.username}</div>
+                    <div>
+                      <span className='fw-bold'>{message.username}</span>{' '}
+                      <small className='text-secondary'>{message.time}</small>
+                    </div>
                     {message.currentMessage}
                   </div>
                 </ListGroup.Item>

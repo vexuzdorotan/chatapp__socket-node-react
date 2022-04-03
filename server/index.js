@@ -1,17 +1,21 @@
 import express from 'express'
 import cors from 'cors'
+import dotenv from 'dotenv'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 // import { dirname } from 'path'
 // import { fileURLToPath } from 'url'
 
+dotenv.config({ path: './config/config.env' })
 const app = express()
 const httpServer = createServer(app)
 // const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const io = new Server(httpServer, {
   cors: {
-    origin: 'https://chatapp-vexuz.netlify.app' || REACT_APP_FRONTEND_LOCAL_URL,
+    origin:
+      process.env.REACT_APP_FRONTEND_LOCAL_URL ||
+      'https://vexuz-chatapp.netlify.app',
     methods: ['GET', 'POST'],
   },
 })
@@ -36,7 +40,6 @@ io.on('connection', (socket) => {
     console.log('user disconnected')
   })
 })
-
 
 app.get('/', (req, res) => {
   res.send(`Server listening on port ${PORT}`)

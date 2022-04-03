@@ -11,7 +11,7 @@ const httpServer = createServer(app)
 
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: 'https://chatapp-vexuz.netlify.app' || REACT_APP_FRONTEND_LOCAL_URL,
     methods: ['GET', 'POST'],
   },
 })
